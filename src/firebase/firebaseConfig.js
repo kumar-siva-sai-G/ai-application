@@ -1,4 +1,3 @@
-// IMPORTANT: PASTE YOUR FIREBASE CONFIG OBJECT HERE
 export const firebaseConfig = {
   apiKey: "AIzaSyAbxZhkFuMs_suwPPAHMYXUevym6ltdj2I",
   authDomain: "ai-application-43f8a.firebaseapp.com",
