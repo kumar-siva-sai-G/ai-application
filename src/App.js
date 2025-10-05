@@ -451,8 +451,10 @@ const VideoResult = ({ prompt }) => {
 // --- API Call & Helper Functions ---
 
 async function getAIResponse(userQuery, file) {
-    // IMPORTANT: PASTE YOUR GOOGLE AI API KEY HERE
-    const apiKey = "PASTE_YOUR_GOOGLE_AI_API_KEY_HERE"; 
+    const apiKey = process.env.REACT_APP_GEMINI_API_KEY;
+    if (!apiKey) {
+        throw new Error('REACT_APP_GEMINI_API_KEY is not set');
+    }
     const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
 
     const systemPrompt = `You are a helpful AI Librarian... (system prompt omitted for brevity, but is the same as before)`;
@@ -479,8 +481,10 @@ async function getAIResponse(userQuery, file) {
 }
 
 async function generateImageFromPrompt(prompt) {
-    // IMPORTANT: PASTE YOUR GOOGLE AI API KEY HERE
-    const apiKey = "PASTE_YOUR_GOOGLE_AI_API_KEY_HERE";
+    const apiKey = process.env.REACT_APP_GEMINI_API_KEY;
+    if (!apiKey) {
+        throw new Error('REACT_APP_GEMINI_API_KEY is not set');
+    }
     const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-002:predict?key=${apiKey}`;
     const payload = { instances: [{ "prompt": prompt }], parameters: { "sampleCount": 1 } };
     const response = await fetch(apiUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
