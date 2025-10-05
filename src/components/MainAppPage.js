@@ -67,7 +67,7 @@ const MainAppPage = ({ user, handleLogout }) => {
             if (aiResponse.imagePrompt) {
                 imageData = await generateImageFromPrompt(aiResponse.imagePrompt);
             }
-            
+
             // Consolidate results
             const finalResult = {
                 type: 'aiResponse',
@@ -81,14 +81,16 @@ const MainAppPage = ({ user, handleLogout }) => {
             console.error("Error during AI processing:", err);
             let errorMessage = 'An error occurred. Please check the console and try again.';
             if (err.message.includes('403')) {
-                errorMessage = 'API call failed (Error 403): This usually means there is a problem with the API key. Please ensure your key is correct, active, and enabled for the Gemini & Imagen APIs in your Google Cloud project.';
+                errorMessage = 'API call failed (Error 403): This usually means there is a problem with the API key. Please ensure your keys are correct and active.';
             } else if (err.message.includes('400')) {
-                errorMessage = 'Image generation API failed (Error 400): This may be due to an invalid prompt or an issue with your API key. Please check your prompt and ensure your API key is correctly configured.';
+                errorMessage = 'Image generation API failed (Error 400): This may be due to an invalid prompt or an issue with your API key. Please check your prompt and ensure your OpenAI API key is correctly configured.';
             } else if (err.message.includes('Image generation prompt is empty or invalid')) {
                 errorMessage = 'The AI failed to generate a valid prompt for the image. Please try rephrasing your request.';
             } else if (err.message.includes('API key not valid')) {
                 errorMessage = 'Your Google AI API Key is not valid. Please check that you have pasted it correctly.';
-            } else if (err instanceof TypeError) { 
+            } else if (err.message.includes('OpenAI API key is not configured')) {
+                errorMessage = 'Your OpenAI API key is not configured. Please set REACT_APP_OPENAI_API_KEY in your .env file.';
+            } else if (err instanceof TypeError) {
                 errorMessage = 'A network error occurred. Please check your internet connection and try again.';
             }
             setError(errorMessage);

@@ -43,14 +43,26 @@ export async function generateImageFromPrompt(prompt) {
     if (!prompt) {
         throw new Error("Image generation prompt is empty or invalid.");
     }
-    // IMPORTANT: PASTE YOUR GOOGLE AI API KEY HERE
-    const apiKey = process.env.REACT_APP_GEMINI_API_KEY;
-    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-002:predict?key=${apiKey}`;
-    const payload = { instances: [{ "prompt": prompt }], parameters: { "sampleCount": 1 } };
-    const response = await fetch(apiUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
-    if (!response.ok) throw new Error(`Image generation API failed: ${response.status}`);
-    const result = await response.json();
-    const imageData = result.predictions?.[0]?.bytesBase64Encoded;
-    if (!imageData) throw new Error("Invalid response from image AI.");
-    return imageData;
+    try {
+        // Use free Picsum API for random images
+        const apiUrl = `https://picsum.photos/1024/1024?random=${Math.random()}`;
+        const response = await fetch(apiUrl);
+        if (!response.ok) {
+            throw new Error(`Image fetch failed (${response.status})`);
+        }
+        const blob = await response.blob();
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = () => {
+                const base64 = reader.result.split(',')[1];
+                resolve(base64);
+            };
+            reader.onerror = reject;
+            reader.readAsDataURL(blob);
+        });
+    } catch (error) {
+        // If fetch fails, return null to show prompt instead
+        console.warn("Image fetch failed:", error);
+        return null;
+    }
 }
